@@ -75,7 +75,7 @@
         </li>
       </ul>
     </section>
-    
+
     <!-- 右侧上滑小图片 -->
     <div
       v-if="this.$store.state.themeObj.user_start != 0"

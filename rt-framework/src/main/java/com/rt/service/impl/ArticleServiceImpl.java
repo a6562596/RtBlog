@@ -6,13 +6,16 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.rt.constants.SystemCanstants;
 import com.rt.domain.ResponseResult;
 import com.rt.domain.entity.Article;
+import com.rt.domain.vo.ArticleListVo;
 import com.rt.domain.vo.HotArticleVo;
+import com.rt.domain.vo.PageVo;
 import com.rt.mapper.ArticleMapper;
 import com.rt.service.ArticleService;
 import com.rt.utils.BeanCopyUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Service实现类
@@ -51,4 +54,28 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
         return ResponseResult.okResult(vs);
     }
+
+    @Override
+    public ResponseResult articleList(Integer pageNum, Integer pageSize, Long categoryId) {
+        //首页
+        // 查询所有的文章
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        // 状态是正式发布的文章
+        queryWrapper.eq(Article::getStatus, SystemCanstants.ARTICLE_STATUS_NORMAL);
+        // 置顶的字段按降序排列
+        queryWrapper.orderByDesc(Article::getIsTop);
+        // 如果有categoryId就要查询时和传入相同
+        queryWrapper.eq(Objects.nonNull(categoryId) && categoryId > 0,Article::getCategoryId,categoryId);
+        // 分页
+        Page<Article> page = new Page(pageNum,pageSize);
+        page(page,queryWrapper);
+
+        //封装vo
+        List<ArticleListVo> articleListVos = BeanCopyUtils.copyBeanList(page.getRecords(), ArticleListVo.class);
+        //分页vo
+        PageVo pageVo = new PageVo(articleListVos,page.getTotal());
+
+        return ResponseResult.okResult(pageVo);
+    }
+
 }

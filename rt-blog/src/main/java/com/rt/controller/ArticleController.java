@@ -1,6 +1,7 @@
 package com.rt.controller;
 
 import com.rt.domain.ResponseResult;
+import com.rt.domain.entity.Article;
 import com.rt.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,5 +28,11 @@ public class ArticleController {
     public ResponseResult hotArticleList(){
         ResponseResult result = articleService.hotArticleList();
         return result;
+    }
+
+    //
+    @GetMapping("/articleList")
+    public ResponseResult articleList(Integer pageNum, Integer pageSize, Long categoryId){
+        return articleService.articleList(pageNum,pageSize,categoryId);
     }
 }

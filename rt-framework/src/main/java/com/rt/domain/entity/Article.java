@@ -12,11 +12,11 @@ import lombok.NoArgsConstructor;
 /**
  * 文章表(Article)表实体类
  *
- * @author makejava
+ * @author rt
  * @since 2025-03-27 18:42:11
  */
 @SuppressWarnings("serial")
-@Data
+@Data//有这个注解就无需写getset方法了
 @NoArgsConstructor
 @AllArgsConstructor
 @TableName("rt_article")

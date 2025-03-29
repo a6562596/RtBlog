@@ -25,5 +25,10 @@ public class SystemCanstants {
      * 文章列表每页显示的数据条数
      */
     public static final int ARTICLE_STATUS_SIZE = 10;
+
+    /**
+     * 文章的状态
+     */
+    public static final String STATUS_NORMAL = "0";
     
 }
