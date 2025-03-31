@@ -30,8 +30,8 @@
                 </h2>
 
                 <div class="ui label">
-                    <!-- <a :href="'#/Share?classId='+item.categoryId">{{item.categoryName}}</a> -->
-                  <a :href="'#/DetailArticle?aid='+item.id">{{item.categoryName}}</a>
+                    <a :href="'#/Share?classId='+item.categoryId">{{item.categoryName}}</a>
+                  <!--<a :href="'#/DetailArticle?aid='+item.id">{{item.categoryName}}</a>-->
                 </div>
             </header>
             <div class="article-content">
