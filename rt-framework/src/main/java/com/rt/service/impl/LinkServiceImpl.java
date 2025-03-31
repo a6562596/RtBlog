@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.rt.constants.SystemCanstants;
 import com.rt.domain.ResponseResult;
 import com.rt.domain.entity.Link;
-import com.rt.domain.vo.GetAllLinkVo;
+import com.rt.domain.vo.AllLinkVo;
 import com.rt.mapper.LinkMapper;
 import com.rt.service.LinkService;
 import com.rt.utils.BeanCopyUtils;
@@ -35,7 +35,7 @@ public class LinkServiceImpl extends ServiceImpl<LinkMapper, Link> implements Li
         //转换成list形式
         List<Link> list = list(linkLambdaQueryWrapper);
         //封装vo
-        List<GetAllLinkVo> getAllLinkVos = BeanCopyUtils.copyBeanList(list, GetAllLinkVo.class);
+        List<AllLinkVo> getAllLinkVos = BeanCopyUtils.copyBeanList(list, AllLinkVo.class);
 
         return ResponseResult.okResult(getAllLinkVos);
     }

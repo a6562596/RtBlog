@@ -33,7 +33,7 @@
               "
               :onerror="$store.state.errorImg"
             />
-            <span>微信扫一扫，请我喝杯咖啡</span>
+            <span>微信扫一扫，请我喝杯奶茶</span>
           </div>
         </el-col>
         <!-- <el-col :span="12" class="donate-item">
