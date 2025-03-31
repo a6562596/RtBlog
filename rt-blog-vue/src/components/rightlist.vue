@@ -7,7 +7,7 @@
           :src="
             this.$store.state.themeObj.center_smailimg
               ? this.$store.state.themeObj.center_smailimg
-              : 'static/img/img01.jpg'
+              : 'static/img/img01.png'
           "
           alt=""
         />
@@ -86,7 +86,7 @@
         :src="
           this.$store.state.themeObj.right_img
             ? this.$store.state.themeObj.right_img
-            : 'static/img/scroll.png'
+            : 'static/img/long.png'
         "
         alt=""
       />
@@ -100,7 +100,7 @@
         :src="
           this.$store.state.themeObj.right_img
             ? this.$store.state.themeObj.right_img
-            : 'static/img/scroll.png'
+            : 'static/img/long.png'
         "
         alt=""
       />

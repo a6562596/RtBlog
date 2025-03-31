@@ -46,7 +46,7 @@
 
 			<h2 class="h-description">
 
-                        {{this.$store.state.themeObj.autograph?this.$store.state.themeObj.autograph:"手动写一下描述吧"}}
+                        {{this.$store.state.themeObj.autograph?this.$store.state.themeObj.autograph:"没关系能打开文档就很厉害了"}}
 
                 </h2>
 		</div>
