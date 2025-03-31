@@ -6,16 +6,21 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.rt.constants.SystemCanstants;
 import com.rt.domain.ResponseResult;
 import com.rt.domain.entity.Article;
+import com.rt.domain.entity.Category;
+import com.rt.domain.vo.ArticleDetailVo;
 import com.rt.domain.vo.ArticleListVo;
 import com.rt.domain.vo.HotArticleVo;
 import com.rt.domain.vo.PageVo;
 import com.rt.mapper.ArticleMapper;
 import com.rt.service.ArticleService;
+import com.rt.service.CategoryService;
 import com.rt.utils.BeanCopyUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Service实现类
@@ -55,6 +60,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         return ResponseResult.okResult(vs);
     }
 
+    /**
+     * 查询首页文章信息,分类文章信息
+     */
+    @Autowired
+    //注入我们写的CategoryService接口
+    private CategoryService categoryService;
     @Override
     public ResponseResult articleList(Integer pageNum, Integer pageSize, Long categoryId) {
         //首页
@@ -64,11 +75,42 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         queryWrapper.eq(Article::getStatus, SystemCanstants.ARTICLE_STATUS_NORMAL);
         // 置顶的字段按降序排列
         queryWrapper.orderByDesc(Article::getIsTop);
-        // 如果有categoryId就要查询时和传入相同
+        //判空。如果前端传了categoryId这个参数，那么查询时要和传入的相同。第二个参数是数据表的文章id，第三个字段是前端传来的文章id
         queryWrapper.eq(Objects.nonNull(categoryId) && categoryId > 0,Article::getCategoryId,categoryId);
         // 分页
         Page<Article> page = new Page(pageNum,pageSize);
         page(page,queryWrapper);
+
+        /**
+         * 解决categoryName字段没有返回值的问题。在分页之后，封装成ArticleListVo之前，进行处理
+         */
+/*        //用categoryId来查询categoryName(category表的name字段)，也就是查询'分类名称'。有两种方式来实现，如下
+        List<Article> articles = page.getRecords();
+        //第一种方式，用for循环遍历的方式
+        for (Article article : articles) {
+            //1.获取到文章表id--->查询分类表的数据--->把分类表的名称数据给文章表的分类名称
+            //'article.getCategoryId()'表示从article表获取category_id字段，然后作为查询category表的name字段
+            Category category = categoryService.getById(article.getCategoryId());
+            //把查询出来的category表的name字段值，也就是article，设置给Article实体类的categoryName成员变量
+            article.setCategoryName(category.getName());
+        }*/
+
+        /**
+         * 解决categoryName字段没有返回值的问题。在分页之后，封装成ArticleListVo之前，进行处理。第二种方式，用stream流的方式
+         */
+        //用categoryId来查询categoryName(category表的name字段)，也就是查询'分类名称'
+        List<Article> articles = page.getRecords();
+        articles.stream()
+                .map(article -> {
+                    //'article.getCategoryId()'表示从article表获取category_id字段，然后作为查询category表的name字段
+                    Category category = categoryService.getById(article.getCategoryId());
+                    String name = category.getName();
+                    //把查询出来的category表的name字段值，也就是article，设置给Article实体类的categoryName成员变量
+                    article.setCategoryName(name);
+                    //把查询出来的category表的name字段值，也就是article，设置给Article实体类的categoryName成员变量
+                    return article;
+                })
+                .collect(Collectors.toList());
 
         //封装vo
         List<ArticleListVo> articleListVos = BeanCopyUtils.copyBeanList(page.getRecords(), ArticleListVo.class);
@@ -76,6 +118,26 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         PageVo pageVo = new PageVo(articleListVos,page.getTotal());
 
         return ResponseResult.okResult(pageVo);
+    }
+
+    /**
+     * 阅读全文
+     * @param id
+     * @return
+     */
+    @Override
+    public ResponseResult getArticleDetail(Long id) {
+        //根据id查询文章正文
+        Article article = getById(id);
+        //转换vo
+        ArticleDetailVo articleDetailVo = BeanCopyUtils.copyBean(article, ArticleDetailVo.class);
+        //根据分类id查询分类名称
+        Long categoryId = articleDetailVo.getCategoryId();
+        Category category = categoryService.getById(categoryId);
+        if(category != null){
+            articleDetailVo.setCategoryName(category.getName());
+        }
+        return ResponseResult.okResult(articleDetailVo);
     }
 
 }

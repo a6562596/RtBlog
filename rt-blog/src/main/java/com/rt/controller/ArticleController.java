@@ -5,6 +5,7 @@ import com.rt.domain.entity.Article;
 import com.rt.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,9 +31,22 @@ public class ArticleController {
         return result;
     }
 
-    //
+    /**
+     * 查询首页文章信息,分类文章信息
+     */
+
     @GetMapping("/articleList")
     public ResponseResult articleList(Integer pageNum, Integer pageSize, Long categoryId){
         return articleService.articleList(pageNum,pageSize,categoryId);
+    }
+
+    /**
+     * 阅读全文
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    public ResponseResult getArticleDetail(@PathVariable("id") Long id){
+        return articleService.getArticleDetail(id);
     }
 }
